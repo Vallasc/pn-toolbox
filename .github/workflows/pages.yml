@@ -1,4 +1,4 @@
-# Pubblica la home e assembla i singoli tool, ciascuno con il proprio build Vite.
+# Costruisce il sito con `tools/home/build.js` e lo pubblica su GitHub Pages.
 #
 # Va scelto "GitHub Actions" come sorgente in Settings → Pages: con la
 # pubblicazione dal branch il build non girerebbe e il bundle mancherebbe.
@@ -31,27 +31,11 @@ jobs:
           node-version: 22
           package-manager-cache: false
 
+      # Tutta la logica sta in `tools/home/build.js`, uguale in locale e qui:
+      # costruisce i tool che hanno un package.json, copia le loro `public/`
+      # e genera la home.
       - name: Build site
-        run: |
-          mkdir -p _site
-          cp .nojekyll _site/
-
-          for manifest in tools/*/site-tool.json; do
-            [ -f "$manifest" ] || continue
-            tool="${manifest%/site-tool.json}"
-            [ -f "$tool/package.json" ] || {
-              echo "Missing package.json for $tool" >&2
-              exit 1
-            }
-            echo "Building $tool"
-            (
-              cd "$tool"
-              npm ci
-              npm run build
-            )
-          done
-
-          node tools/home/build-index.js
+        run: node tools/home/build.js
 
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 

@@ -12,23 +12,24 @@ Le credenziali arrivano dalla cartella `~/.aws` della tua macchina, scelta col
 selettore del browser. Niente server, niente backend: la pagina parla con AWS
 per conto tuo, firmando le chiamate con le tue credenziali.
 
-Va servita da un server statico qualunque — `npx serve`, l'estensione del tuo
-editor, quello che hai sottomano. Non da `file://`: i moduli ES vogliono
-un'origine.
-
-Le dipendenze del browser non arrivano da CDN: Vite crea bundle e asset locali.
+In sviluppo si avvia con `npm run dev`. `npm run build` scrive la versione
+statica in `public/`, che non è versionata. Si può servire da un server
+qualunque, ma non da `file://`: i moduli ES richiedono un'origine.
 
 ```sh
 cd tools/analogDeliveryTracker
 npm ci
-npm run dev
-npm run build
+npm run dev     # sviluppo
+npm run build   # → public/
 ```
 
+Le dipendenze del browser, cioè l'SDK AWS, Mermaid, Tailwind e il font, non
+arrivano da CDN. L'SDK AWS non ha una build per browser caricabile con
+`integrity`, quindi il tool usa Vite e include tutto nella build.
+
 Il tool è autonomo: package, lockfile, configurazione Vite e dipendenze restano
-qui. La build locale scrive in `_site/tools/analogDeliveryTracker/`; il
-workflow `.github/workflows/pages.yml` assembla ogni tool e la home per
-GitHub Pages. In Settings → Pages la sorgente dev'essere «GitHub Actions».
+qui. Per la pubblicazione su GitHub Pages vedi il [README del
+progetto](../../README.md).
 
 ## Come si usa
 
@@ -135,7 +136,7 @@ vuota fa dire «nessun log» con i log presenti.
 | `src/diagram.js` | il diagramma del prodotto, con sopra il cammino percorso |
 | `src/view.js` | composizione dell'HTML |
 | `src/tracker.js` | la pagina: stato, gestori degli eventi, avvio |
-| `vite.config.js` | build del tool nel suo sottopercorso di Pages |
+| `vite.config.js` | build in `public/`, con percorsi relativi |
 
 Le dipendenze sono una catena, senza anelli: `html`/`constants` ← `sdk` ←
 `data` ← `timeline` ← `diagram` ← `view` ← `tracker`. `escape` sta in un modulo
