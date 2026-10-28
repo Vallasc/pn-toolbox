@@ -43,12 +43,11 @@ jobs:
               echo "Missing package.json for $tool" >&2
               exit 1
             }
-            tool_name="${tool##*/}"
             echo "Building $tool"
             (
               cd "$tool"
               npm ci
-              PAGES_BASE_PATH="/${GITHUB_REPOSITORY##*/}/tools/$tool_name/" npm run build
+              npm run build
             )
           done
 

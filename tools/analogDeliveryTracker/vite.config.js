@@ -6,10 +6,12 @@ import { defineConfig } from "vite";
 const root = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
-  base: process.env.PAGES_BASE_PATH ?? "./",
+  base: "./",
   plugins: [tailwindcss()],
   build: {
     outDir: resolve(root, "../../_site/tools/analogDeliveryTracker"),
     emptyOutDir: true,
+    // La CSP ammette solo `font-src 'self'`: niente asset inline come `data:`.
+    assetsInlineLimit: 0,
   },
 });
